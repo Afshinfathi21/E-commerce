@@ -10,6 +10,11 @@ class CategoryView(viewsets.ModelViewSet):
     serializer_class=CategorySerializer
     queryset=Category.objects.all()
 
+    def get_permissions(self):
+        if self.action in ['create','update','partial_update','destroy']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+
 
 class ProductView(viewsets.ModelViewSet):
     serializer_class=ProductSerializer
@@ -22,7 +27,6 @@ class ProductView(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create','update','partial_update','destroy']:
-            #i should check requested user is authenticated or not by sending request to user service.
             permission_classes=[permissions.IsAuthenticated]
             return [permission() for permission in permission_classes]
         return [permissions.AllowAny()]

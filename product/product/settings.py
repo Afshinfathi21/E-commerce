@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
     'django_filters',
     'rest_framework',
     'products',
@@ -123,3 +124,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'products.authentication.CustomJwtAuthentication',
+    )
+}
+
+SIMPLE_JWT={
+ 'ALGORITHM':'HS256',
+ 'SIGNING_KEY':'django-insecure-+dyr$(inb4!(4m_!v)rf$74+q7c$&n4#188%+yh!f)a74em9xe',
+ 'VERIFYING_KEY':None,   
+}

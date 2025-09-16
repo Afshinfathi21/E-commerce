@@ -2,7 +2,17 @@ from rest_framework import serializers
 from accounts.models import User
 from rest_framework.validators import UniqueValidator
 import uuid
-from rest_framework_simplejwt.serializers import TokenObtainSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def get_token(self,user):
+        token=super().get_token(user)
+        token['email']=user.email
+        token['username']=user.username
+        token['role']=getattr(user,'role','user')
+
+        return token
 
 
 class UserSerializer(serializers.ModelSerializer):
