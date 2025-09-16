@@ -10,7 +10,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token=super().get_token(user)
         token['email']=user.email
         token['username']=user.username
-        token['role']=getattr(user,'role','user')
+        token['is_staff']=getattr(user,'is_staff','user')
 
         return token
 
