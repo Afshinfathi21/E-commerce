@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-c!_6qmx+a2@$aewi7x20p85z%0mpq$2zl2uzsq^fenjt@4r%r%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
+    'rest_framework',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -72,13 +75,23 @@ WSGI_APPLICATION = 'order.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+import os
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "order"),
+        "USER": os.getenv("POSTGRES_USER", "order"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "pass"),
+        "HOST": os.getenv("POSTGRES_HOST", "orderdb"),
+        "PORT": "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -120,3 +133,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'orders.authentication.CustomJwtAuthentication',
+    )
+}
+
+SIMPLE_JWT={
+ 'ALGORITHM':'HS256',
+ 'SIGNING_KEY':'django-insecure-+dyr$(inb4!(4m_!v)rf$74+q7c$&n4#188%+yh!f)a74em9xe',
+ 'VERIFYING_KEY':None,   
+}

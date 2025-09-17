@@ -1,0 +1,128 @@
+version: "3.8"
+
+services:
+  user:
+    build: ./user
+    container_name: user_service
+    command: gunicorn user.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    volumes:
+      - ./user:/app
+    environment:
+      - DEBUG=1
+      - POSTGRES_DB=user
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_HOST=userdb
+      - JWT_SECRET=secret
+    depends_on:
+      - userdb
+    ports:
+    - "8001:8000"
+    
+  userdb:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=user
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      # - "POSTGRES_HOST_AUTH_METHOD=trust"
+    volumes:
+      - user_data:/var/lib/postgresql/data
+    
+  product:
+    build: ./product
+    container_name: product_service
+    command: gunicorn product.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    volumes:
+      - ./product:/app
+    environment:
+      - DEBUG=1
+      - POSTGRES_DB=product
+      - POSTGRES_USER=product
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_HOST=productdb
+      - JWT_SECRET=secret
+    depends_on:
+      - productdb
+    ports:
+      - "8002:8000"
+
+  productdb:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=product
+      - POSTGRES_USER=product
+      - POSTGRES_PASSWORD=pass
+      # - "POSTGRES_HOST_AUTH_METHOD=trust"
+    volumes:
+      - product_data:/var/lib/postgresql/data
+  
+  inventory:
+    build: ./inventory
+    container_name: inventory_service
+    command: gunicorn inventory.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    volumes:
+      - ./inventory:/app
+    environment:
+      - DEBUG=1
+      - POSTGRES_DB=inventory
+      - POSTGRES_USER=inventory
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_HOST=inventorydb
+      - JWT_SECRET=secret
+    depends_on:
+      - inventorydb
+    ports:
+      - "8003:8000"    
+  inventorydb:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=inventory
+      - POSTGRES_USER=inventory
+      - POSTGRES_PASSWORD=pass
+      # - "POSTGRES_HOST_AUTH_METHOD=trust"
+    volumes:
+      - inventory_data:/var/lib/postgresql/data
+  order:
+    build: ./order
+    container_name: order
+    command: gunicorn order.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    volumes:
+      - ./order:/app
+    environment:
+      - DEBUG=1
+      - POSTGRES_DB=order
+      - POSTGRES_USER=order
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_HOST=orderdb
+      - JWT_SECRET=secret
+    depends_on:
+      - orderdb
+    ports:
+      - "8004:8000"    
+  orderdb:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=order
+      - POSTGRES_USER=order
+      - POSTGRES_PASSWORD=pass
+      # - "POStGRES_HOST_AUTH_METHOD=trust"
+    volumes:
+      - order_data:/var/lib/postgresql/data
+  nginx:
+    image: nginx:latest
+    container_name: nginx_gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user
+      - product
+      - order
+      - inventory
+volumes:
+  user_data:
+  product_data:
+  inventory_data:
+  order_data:
