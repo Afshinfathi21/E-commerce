@@ -1,0 +1,5 @@
+user/staticfiles
+order/staticfiles
+product/staticfiles
+inventory/staticfiles
+payment/staticfiles
