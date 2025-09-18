@@ -1,7 +1,7 @@
 import requests
 
 PRODUCT_SERVICE_URL='http://product:8000/api/products/'
-INVENTORY_SERVICE_URL='http://inventory:8000/api/inventory/'
+INVENTORY_SERVICE_URL='http://inventory:8000/api/inventories/'
 
 def product_exist(product_id):
     response=requests.get(f'{PRODUCT_SERVICE_URL}{product_id}/')
@@ -14,6 +14,6 @@ def check_inventory(product_id,quantity):
     stock=response.json().get('quantity',0)
     return stock >= quantity
 
-def reduce_inventory(product_id,quantity):
-    response=requests.patch(f'{INVENTORY_SERVICE_URL}{product_id}/',json={'quantity':quantity})
+def reduce_inventory(product_id,quantity,token):
+    response=requests.patch(f'{INVENTORY_SERVICE_URL}{product_id}/',json={'quantity':quantity},headers={'Authorization':f'Bearer {token}'})
     return response.status_code == 200

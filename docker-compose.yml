@@ -115,6 +115,33 @@ services:
       # - "POStGRES_HOST_AUTH_METHOD=trust"
     volumes:
       - order_data:/var/lib/postgresql/data
+  payment:
+    build: ./payment
+    container_name: payment_service
+    command: gunicorn payment.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    volumes:
+      - ./payment:/app
+      - static_files:/app/staticfiles
+    environment:
+      - DEBUG=1
+      - POSTGRES_DB=payment
+      - POSTGRES_USER=payment
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_HOST=paymentdb
+      - JWT_SECRET=secret
+    depends_on:
+      - paymentdb
+    ports:
+      - "8005:8000" 
+  paymentdb:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=payment
+      - POSTGRES_USER=payment
+      - POSTGRES_PASSWORD=pass
+      # - "POStGRES_HOST_AUTH_METHOD=trust"
+    volumes:
+      - payment_data:/var/lib/postgresql/data
   nginx:
     image: nginx:latest
     container_name: nginx_gateway
@@ -128,6 +155,7 @@ services:
       - product
       - order
       - inventory
+      - payment
       
 volumes:
   static_files:
@@ -135,4 +163,5 @@ volumes:
   product_data:
   inventory_data:
   order_data:
+  payment_data:
 

@@ -4,18 +4,18 @@ from django.db import models
 
 
 class Order(models.Model):
-    Choices={
-        'pending':'PENDING',
-        'canceled':'CANCELED',
-        'completed':'COMPLETED'
-    }
+    Choices=[
+        ('pending','PENDING'),
+        ('canceled','CANCELED'),
+       ('completed','COMPLETED')
+    ]
 
     product=models.IntegerField()
     user=models.IntegerField()
 
     quantity=models.PositiveIntegerField(default=0)
-    status=models.CharField(choices=Choices, max_length=9,default='PENDING')
-    created_at=models.DateTimeField(auto_now_add=False)
+    status=models.CharField(choices=Choices, max_length=9,default='pending')
+    created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Order {self.id} - User {self.user} - Product {self.product} - '
