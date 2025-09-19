@@ -1,5 +1,5 @@
-user/staticfiles
-order/staticfiles
-product/staticfiles
-inventory/staticfiles
-payment/staticfiles
+user/staticfiles/
+order/staticfiles/
+product/staticfiles/
+inventory/staticfiles/
+payment/staticfiles/
